@@ -122,7 +122,7 @@ for line in config:
             if tmpline[i] == '%':
                 lessonDesc += tmpline[i] + tmpline[i+1]
                 i += 1
-                if tmpline[i] == 'u':
+                if tmpline[i] == 's':
                     uppercaseKnown = True
                 if tmpline[i] == '%':
                     line += '%'
