@@ -141,7 +141,6 @@ for line in config:
             if add != "":
                 out.write(add + '\n')
                 exercise += 1
-    exercise = 1
     # Exercises with all known characters
     characters += line
     for i in range(5):
