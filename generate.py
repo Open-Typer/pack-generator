@@ -173,35 +173,36 @@ for line in config:
 			out.write(add + '\n')
 			exercise += 1
 	# Word exercises (only works with a word list)
-	sublesson += 1
-	exercise = 1
-	availableWords = list()
-	wordlistFile.seek(0)
-	wordlistLines = wordlistFile.read().splitlines()
-	for wordlistLine in wordlistLines:
-		words = wordlistLine.split()
-		for word in words:
-			wordUsable = True
-			for ch in word:
-				if (not ch in characters and not ch.swapcase() in characters) or (ch.isupper() and not uppercaseKnown):
-					wordUsable = False
-					break
-			if wordUsable:
-				availableWords.append(word)
-	if len(availableWords) > 0:
-		for i in range(5):
-			text = ''
-			for i2 in range(random.randint(10,50)):
-				word = availableWords[random.randint(0,len(availableWords)-1)]
-				sepChar = knownSepCharacters[random.randint(0,len(knownSepCharacters)-1)]
-				if text == '':
-					text = word + sepChar
-				else:
-					text += ' ' + word + sepChar
-			add = generateExercise(lesson,sublesson,exercise,lessonDesc,None,None,None,None,text)
-			if add != "":
-				out.write(add + '\n')
-				exercise += 1
+	if(wordlistAvailable):
+		sublesson += 1
+		exercise = 1
+		availableWords = list()
+		wordlistFile.seek(0)
+		wordlistLines = wordlistFile.read().splitlines()
+		for wordlistLine in wordlistLines:
+			words = wordlistLine.split()
+			for word in words:
+				wordUsable = True
+				for ch in word:
+					if (not ch in characters and not ch.swapcase() in characters) or (ch.isupper() and not uppercaseKnown):
+						wordUsable = False
+						break
+				if wordUsable:
+					availableWords.append(word)
+		if len(availableWords) > 0:
+			for i in range(5):
+				text = ''
+				for i2 in range(random.randint(10,50)):
+					word = availableWords[random.randint(0,len(availableWords)-1)]
+					sepChar = knownSepCharacters[random.randint(0,len(knownSepCharacters)-1)]
+					if text == '':
+						text = word + sepChar
+					else:
+						text += ' ' + word + sepChar
+				add = generateExercise(lesson,sublesson,exercise,lessonDesc,None,None,None,None,text)
+				if add != "":
+					out.write(add + '\n')
+					exercise += 1
 	lesson += 1
 	sublesson = 1
 	exercise = 1
