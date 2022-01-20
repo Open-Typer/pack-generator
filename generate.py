@@ -189,7 +189,7 @@ for line in config:
 						break
 				if wordUsable:
 					availableWords.append(word)
-		if len(availableWords) > 0:
+		if len(availableWords) >= 5:
 			for i in range(5):
 				text = ''
 				for i2 in range(random.randint(10,50)):
