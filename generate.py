@@ -19,6 +19,7 @@
 # along with Open-Typer. If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+import os
 import random
 
 def printUsage():
@@ -112,8 +113,11 @@ if wordlist == "":
 	print(sys.argv[0]+": warning: no word list file specified")
 	wordlistAvailable = False
 else:
-	wordlistFile = open(wordlist,"r")
-	wordlistAvailable = True
+	if os.path.isfile(wordlist):
+		wordlistFile = open(wordlist,"r")
+		wordlistAvailable = True
+	else:
+		wordlistAvailable = False
 out = open(outname,"w")
 # Init variables
 characters = ""
