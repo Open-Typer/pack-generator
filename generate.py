@@ -45,7 +45,7 @@ def generate(usableCharacters, importantCharacters, sepCharacters, uppercaseKnow
                     i3 += 1
                 while usableCharacters[getid] in sepCharacters:
                     getid = random.randint(0,len(usableCharacters)-1)
-                if i2 == 0 and uppercaseKnown:
+                if i2 == 0 and uppercaseKnown and len(usableCharacters[getid].encode()) == 1:
                     if random.randint(0,1) == 1:
                         out += usableCharacters[getid].swapcase()
                 else:
