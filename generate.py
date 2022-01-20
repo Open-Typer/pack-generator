@@ -22,7 +22,7 @@ import sys
 import random
 
 def printUsage():
-    print("Usage:\n"+sys.argv[0]+" inputFile -o outputFile")
+    print("Usage:\n"+sys.argv[0]+" inputFile -w wordlistFile -o outputFile")
 
 def generate(usableCharacters, importantCharacters, sepCharacters, uppercaseKnown):
     if len(usableCharacters) == 0:
@@ -56,12 +56,19 @@ def generate(usableCharacters, importantCharacters, sepCharacters, uppercaseKnow
                 out += ' '
     return out
 
-def generateExercise(lesson, sublesson, exercise, lessonDesc, lessonCharacters, allCharacters, sepCharacters, uppercaseKnown):
-    exerciseID = str(lesson) + '.' + str(sublesson) + '.' + str(exercise) + ":1,w;120,60"
+def generateExercise(lesson, sublesson, exercise, lessonDesc, lessonCharacters, allCharacters, sepCharacters, uppercaseKnown, customText = ''):
+    exerciseID = str(lesson) + '.' + str(sublesson) + '.' + str(exercise)
+    if customText == '':
+        exerciseID += ":1,w;120,60"
+    else:
+        exerciseID += ":0,0;120,60"
     if exercise == 1:
         exerciseID += ',' + lessonDesc
     exerciseID += ' '
-    add = generate(allCharacters,lessonCharacters,sepCharacters,uppercaseKnown)
+    if customText == '':
+        add = generate(allCharacters,lessonCharacters,sepCharacters,uppercaseKnown)
+    else:
+        add = customText
     if add == "":
         return add
     else:
@@ -70,6 +77,7 @@ def generateExercise(lesson, sublesson, exercise, lessonDesc, lessonCharacters, 
 # Read args
 packname = ""
 outname = ""
+wordlist = ""
 i = 1
 while i < len(sys.argv):
     if sys.argv[i][0] == '-':
@@ -79,6 +87,12 @@ while i < len(sys.argv):
                 print(sys.argv[0]+": missing file operand")
                 exit(3)
             outname = sys.argv[i]
+        elif sys.argv[i] == "-w":
+            i += 1
+            if i == len(sys.argv):
+                print(sys.argv[0]+": missing file operand")
+                exit(3)
+            wordlist = sys.argv[i]
         else:
             printUsage()
             exit(1)
@@ -94,6 +108,12 @@ if packname == "" or outname == "":
     exit(4)
 # Open input and output files
 config = open(packname,"r")
+if wordlist == "":
+    print(sys.argv[0]+": warning: no word list file specified")
+    wordlistAvailable = False
+else:
+    wordlistFile = open(wordlist,"r")
+    wordlistAvailable = True
 out = open(outname,"w")
 # Init variables
 characters = ""
@@ -148,8 +168,40 @@ for line in config:
         if add != "":
             out.write(add + '\n')
             exercise += 1
+    # Word exercises (only works with a word list)
+    sublesson += 1
+    exercise = 1
+    availableWords = list()
+    wordlistFile.seek(0)
+    wordlistLines = wordlistFile.read().splitlines()
+    for wordlistLine in wordlistLines:
+        words = wordlistLine.split()
+        for word in words:
+            wordUsable = True
+            for ch in word:
+                if (not ch in characters and not ch.swapcase() in characters) or (ch.isupper() and not uppercaseKnown):
+                    wordUsable = False
+                    break
+            if wordUsable:
+                availableWords.append(word)
+    if len(availableWords) > 0:
+        for i in range(5):
+            text = ''
+            for i2 in range(random.randint(10,50)):
+                word = availableWords[random.randint(0,len(availableWords)-1)]
+                sepChar = knownSepCharacters[random.randint(0,len(knownSepCharacters)-1)]
+                if text == '':
+                    text = word + sepChar
+                else:
+                    text += ' ' + word + sepChar
+            add = generateExercise(lesson,sublesson,exercise,lessonDesc,None,None,None,None,text)
+            if add != "":
+                out.write(add + '\n')
+                exercise += 1
     lesson += 1
     sublesson = 1
     exercise = 1
 config.close()
+if(wordlistAvailable):
+    wordlistFile.close()
 out.close()
