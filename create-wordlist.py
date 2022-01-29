@@ -50,6 +50,7 @@ def processFile(fileName):
 				wordlist.append(newWord)
 	inputFile.close()
 	# Generate output string
+	wordlist.sort()
 	out = ''
 	for word in wordlist:
 		out += word + '\n'
