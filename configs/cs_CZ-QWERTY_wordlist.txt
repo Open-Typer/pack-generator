@@ -1,1 +1,1 @@
-cz_CZ_wordlist.txt
+cs_CZ_wordlist.txt
